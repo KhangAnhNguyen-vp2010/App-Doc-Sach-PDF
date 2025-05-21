@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:project_flutter/screens/BooksScreen.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
@@ -27,6 +26,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
   TextEditingController _searchController = TextEditingController();
 
   bool _isLoading = true;
+  Timer? _debounce;
 
 
   @override
@@ -42,6 +42,33 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
       setState(() {
         _isLoading = false;
       });
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    _pdfController.dispose();
+    super.dispose();
+  }
+
+
+  Future<void> _search(String text) async {
+    setState(() => _isLoading = true); // Loading nếu cần
+    _searchResult = await _pdfController.searchText(text);
+    setState(() => _isLoading = false);
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 600), () {
+      if (query.isNotEmpty) {
+        _search(query);
+      } else {
+        _searchResult.clear();
+        setState(() {});
+      }
     });
   }
 
@@ -454,14 +481,10 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
             border: InputBorder.none,
           ),
           autofocus: true,
+          onChanged: _onSearchChanged,
           onSubmitted: (value) {
             if (value.isNotEmpty) {
-              _searchResult = _pdfController.searchText(value);
-              _searchResult.addListener(() {
-                if (_searchResult.hasResult) {
-                  setState(() {});
-                }
-              });
+              _search(value);
             }
           },
         )
@@ -515,7 +538,7 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
             canShowScrollStatus: true,
           ),
           // Add search result navigation UI
-          if (_isSearching && _searchResult.hasResult)
+          if (_isSearching)
             Positioned(
               bottom: 80,
               left: 0,
@@ -537,24 +560,15 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        '${_searchResult.currentInstanceIndex}/${_searchResult.totalInstanceCount}',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      SizedBox(width: 15),
                       IconButton(
                         icon: Icon(Icons.arrow_upward),
-                        onPressed: _searchResult.currentInstanceIndex == 1
-                            ? null
-                            : () {
+                        onPressed: () {
                           _searchResult.previousInstance();
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.arrow_downward),
-                        onPressed: _searchResult.currentInstanceIndex == _searchResult.totalInstanceCount
-                            ? null
-                            : () {
+                        onPressed: () {
                           _searchResult.nextInstance();
                         },
                       ),

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_flutter/screens/Book_Online/BookStoreSreen.dart';
-import 'package:project_flutter/screens/BooksScreen.dart';
 import 'package:project_flutter/screens/HistoryScreen.dart';
-import 'package:project_flutter/screens/List_PDF_Online/Read_Online.dart';
 import 'package:project_flutter/screens/pdf_scanner.dart';
-import 'package:project_flutter/screens/temp.dart';
 import '../services/PdfSearchDelegate.dart';
 
 
@@ -84,7 +81,7 @@ class _NavAppState extends State<NavApp> {
               title: Text('Ngôn ngữ'),
               onTap: () {
                 // Xử lý khi nhấn Ngôn ngữ
-                Navigator.push(context, MaterialPageRoute(builder: (context) => temp()));
+
               },
             ),
             ListTile(
@@ -92,7 +89,7 @@ class _NavAppState extends State<NavApp> {
               title: Text('Đánh giá ứng dụng'),
               onTap: () {
                 // Xử lý khi nhấn Đánh giá ứng dụng
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PDFScreen()));
+
               },
             ),
             ListTile(

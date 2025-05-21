@@ -4,6 +4,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:project_flutter/screens/SplashScreen.dart';
 import 'package:project_flutter/services/realm_service.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'Provider/PdfActionsProvider.dart';
 import 'Provider/PdfProvider.dart';
 
