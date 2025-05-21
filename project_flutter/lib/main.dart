@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:project_flutter/screens/SplashScreen.dart';
+import 'package:project_flutter/services/realm_service.dart';
 import 'package:provider/provider.dart';
 import 'Provider/PdfActionsProvider.dart';
 import 'Provider/PdfProvider.dart';
@@ -9,6 +10,7 @@ import 'Provider/PdfProvider.dart';
 
 void main() async {
   await Hive.initFlutter();
+  final realm = RealmService().realm;
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => PdfProvider()),
