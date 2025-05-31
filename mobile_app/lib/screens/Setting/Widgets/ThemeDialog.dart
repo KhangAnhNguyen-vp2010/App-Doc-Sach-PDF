@@ -13,7 +13,7 @@ class ThemeDialog extends StatelessWidget {
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: isDark ? Colors.black87 : Colors.white,
+      backgroundColor: isDark ? Colors.grey : Colors.white,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         child: Column(

@@ -189,7 +189,7 @@ class _NavAppState extends State<NavApp> {
         child: _screens[_selectedIndex], // Hiển thị màn hình tương ứng
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: isDark ? Colors.black45 : null,
+        backgroundColor: isDark ? Colors.grey.shade400 : null,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.file_copy),

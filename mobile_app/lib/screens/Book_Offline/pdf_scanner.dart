@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:path/path.dart' as path;
 import 'package:share_plus/share_plus.dart';
 import '../../generated/l10n.dart';
+import '../../services/BookMarkService.dart';
+import '../../services/FavoriteService.dart';
 import '../../services/PdfSearchDelegate.dart';
 import '../../services/permissions/dataAccess_permisson.dart';
 import 'PdfViewerPage.dart';
@@ -45,98 +44,57 @@ class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveCl
   }
 
   //////////////////////////////////////////////BOOKMARKS
-  void _checkMarkedPage(File file) {
-    String fileName = path.basename(file.path);
-    getMarkedPage(fileName).then((data) {
-      var markedPage = data['page'];
-      var _note = data['note'];
+  Future<void> _checkMarkedPage(String fileName) async {
+    try {
+      final data = await BookmarkService.getMarkedPage(fileName);
+      if (!mounted) return;
+      final markedPage = data?['page'];
+      final note = data?['note'];
+
       if (markedPage != null) {
-        setState(() {
-          _isMarked = true; // Đánh dấu trang đã lưu
-        });
+        setState(() => _isMarked = true);
       }
 
-      if (_note != null) {
-        // Handle the note if it exists
-        print('Note: $_note');
-        // You can display the note in your UI if needed
+      if (note != null) {
+        debugPrint('Note: $note');
       }
-    });
+    } catch (e) {
+      debugPrint('Error checking marked page: $e');
+    }
   }
 
-  // Hàm xử lý đánh dấu hoặc bỏ lưu trang
   void _toggleMarkedPage(File file) {
-    String fileName = path.basename(file.path);
     if (_isMarked) {
-      removeMarkedPage(fileName);
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('❌ Đã bỏ đánh dấu'), duration: Duration(seconds: 2), backgroundColor: Colors.blueAccent,));
-      setState(() {
-        _isMarked = false;
-      });
+      BookmarkService.removeMarkedPage(path.basename(file.path));
+      setState(() => _isMarked = false);
     } else {
-      saveMarkedPage(fileName, 1, S.of(context).temporary_note);
+      BookmarkService.saveMarkedPage(path.basename(file.path), 1, S.of(context).temporary_note, "");
       setState(() {
         _isMarked = true;
       });
     }
   }
-
-  Future<void> saveMarkedPage(String fileName, int page, String note) async {
-    var box = await Hive.openBox('markedPages');
-    box.put(fileName, {"page": page, "note": note});
-  }
-
-  Future<dynamic> getMarkedPage(String fileName) async {
-    var box = await Hive.openBox('markedPages');
-    return box.get(fileName);
-  }
-
-  Future<void> removeMarkedPage(String fileName) async {
-    var box = await Hive.openBox('markedPages');
-    await box.delete(fileName); // Xóa dữ liệu đã lưu
-  }
   //////////////////////////////////////////////
 
 
   /// Chức năng yêu thích
-  Future<void> _toggleFavorite(File file) async {
-    String fileName = path.basename(file.path);
+  Future<void> _checkFavoriteStatus(String fileName) async {
+    final isFavorite = await FavoriteService.isFavorite(fileName);
+    setState(() => _isFavorite = isFavorite);
+  }
 
-    if (_isFavorite) {
-      removeFavorite(fileName); // Nếu đã yêu thích, xóa khỏi danh sách
-      setState(() {
-        _isFavorite = false;
-      });
-    } else {
-      saveFavorite(fileName); // Nếu chưa yêu thích, thêm vào danh sách
-      setState(() {
-        _isFavorite = true;
-      });
+  void _toggleFavorite(File file) {
+    try {
+      if (_isFavorite) {
+        FavoriteService.removeFavorite(path.basename(file.path));
+        setState(() => _isFavorite = false);
+      } else {
+        FavoriteService.addFavorite(path.basename(file.path), "");
+        setState(() => _isFavorite = true);
+      }
+    } catch (e) {
+      debugPrint('Error toggling favorite: $e');
     }
-  }
-
-  Future<void> _checkFavoriteStatus(File file) async {
-    String fileName = path.basename(file.path);
-    getFavorite(fileName).then((data) {
-      setState(() {
-        _isFavorite = data;
-      });
-    });
-  }
-
-  Future<void> saveFavorite(String fileName) async {
-    var box = await Hive.openBox('favoriteBooks');
-    box.put(fileName, {"bool": true});
-  }
-
-  Future<bool> getFavorite(String fileName) async {
-    var box = await Hive.openBox('favoriteBooks');
-    return box.get(fileName);
-  }
-
-  Future<void> removeFavorite(String fileName) async {
-    var box = await Hive.openBox('favoriteBooks');
-    await box.delete(fileName); // Xóa dữ liệu đã lưu
   }
   //////////////////////////////////////////////
 
@@ -289,8 +247,8 @@ class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveCl
   void _showOptionsMenu(BuildContext context, File file) {
     _isMarked = false;
     _isFavorite = false;
-    _checkMarkedPage(file);
-    _checkFavoriteStatus(file);
+    _checkMarkedPage(path.basename(file.path));
+    _checkFavoriteStatus(path.basename(file.path));
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {

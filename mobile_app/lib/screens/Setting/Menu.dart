@@ -79,7 +79,7 @@ class Menu extends StatelessWidget {
                   builder: (context) => const LanguageDialog(),
                 );
               },
-              colorCard: isDark ? Colors.black87 : Colors.white,
+              colorCard: isDark ? Colors.grey.shade400 : Colors.white,
               colorItem: isDark ? Colors.white : Colors.grey,
               colorText: isDark ? Colors.white : Colors.black87,
             ),
@@ -94,7 +94,7 @@ class Menu extends StatelessWidget {
                   builder: (context) => const ThemeDialog(),
                 );
               },
-              colorCard: isDark ? Colors.black87 : Colors.white,
+              colorCard: isDark ? Colors.grey.shade400 : Colors.white,
               colorItem: isDark ? Colors.white : Colors.grey,
               colorText: isDark ? Colors.white : Colors.black87,
             ),
@@ -108,7 +108,7 @@ class Menu extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => MarkedPagesScreen()),
                 );
               },
-              colorCard: isDark ? Colors.black87 : Colors.white,
+              colorCard: isDark ? Colors.grey.shade400 : Colors.white,
               colorItem: isDark ? Colors.white : Colors.grey,
               colorText: isDark ? Colors.white : Colors.black87,
             ),
@@ -122,7 +122,7 @@ class Menu extends StatelessWidget {
                   MaterialPageRoute(builder: (_) => FavoritedPagesScreen()),
                 );
               },
-              colorCard: isDark ? Colors.black87 : Colors.white,
+              colorCard: isDark ? Colors.grey.shade400 : Colors.white,
               colorItem: isDark ? Colors.white : Colors.grey,
               colorText: isDark ? Colors.white : Colors.black87,
             ),
