@@ -52,6 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Bạn có chắc muốn xóa",
     ),
     "author": MessageLookupByLibrary.simpleMessage("Tác giả"),
+    "back": MessageLookupByLibrary.simpleMessage("Quay lại"),
     "bookInformation": MessageLookupByLibrary.simpleMessage("Thông tin sách"),
     "bookmark": MessageLookupByLibrary.simpleMessage("Đánh dấu"),
     "bookmarkImportantPages": MessageLookupByLibrary.simpleMessage(
@@ -62,6 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bookmarkedPage": MessageLookupByLibrary.simpleMessage("Trang đã đánh dấu"),
     "books": MessageLookupByLibrary.simpleMessage("Sách"),
     "cancel": MessageLookupByLibrary.simpleMessage("Hủy"),
+    "clear": MessageLookupByLibrary.simpleMessage("Xóa"),
     "close": MessageLookupByLibrary.simpleMessage("Đóng"),
     "comment": MessageLookupByLibrary.simpleMessage("Nhận xét"),
     "darkMode": MessageLookupByLibrary.simpleMessage("Chế độ tối"),
@@ -173,6 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Đổi tên thành công",
     ),
     "save": MessageLookupByLibrary.simpleMessage("Lưu"),
+    "searchForFiles": MessageLookupByLibrary.simpleMessage("Tìm kiếm tệp"),
     "searchInDocuments": MessageLookupByLibrary.simpleMessage(
       "Tìm kiếm trong tài liệu",
     ),
@@ -206,6 +209,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Thử thay đổi từ khóa hoặc bộ lọc tìm kiếm",
         ),
+    "tryDifferentKeywords": MessageLookupByLibrary.simpleMessage(
+      "Hãy thử từ khóa khác",
+    ),
     "unBookmark": MessageLookupByLibrary.simpleMessage("Bỏ đánh dấu"),
     "unBookmarked": MessageLookupByLibrary.simpleMessage("Đã bỏ đánh dấu"),
     "unableToLoadImage": MessageLookupByLibrary.simpleMessage(

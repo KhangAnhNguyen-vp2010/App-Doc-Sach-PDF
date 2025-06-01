@@ -1,6 +1,8 @@
 // widgets/options_bottom_sheet.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../Providers/ThemeProvider.dart';
 import '../../../generated/l10n.dart';
 import '../../../services/downloadBook.dart';
 
@@ -28,10 +30,11 @@ class OptionsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.black87 : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -60,6 +63,7 @@ class OptionsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
       padding: const EdgeInsets.all(20),
       child: Row(
@@ -86,9 +90,10 @@ class OptionsBottomSheet extends StatelessWidget {
               children: [
                 Text(
                   bookName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -110,6 +115,7 @@ class OptionsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildQuickActions(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
@@ -122,6 +128,7 @@ class OptionsBottomSheet extends StatelessWidget {
               Navigator.pop(context);
               Share.share('Share: $bookName\n$bookUrl');
             },
+            colorText: isDark ? Colors.white : Colors.grey,
           ),
           _buildQuickActionButton(
             icon: Icons.skip_next_rounded,
@@ -130,6 +137,7 @@ class OptionsBottomSheet extends StatelessWidget {
               Navigator.pop(context);
               onGoToPage();
             },
+            colorText: isDark ? Colors.white : Colors.grey,
           ),
           if(typeName=="online")
             _buildQuickActionButton(
@@ -139,6 +147,7 @@ class OptionsBottomSheet extends StatelessWidget {
                 Navigator.pop(context);
                 downloadBook(bookUrl, context);
               },
+              colorText: isDark ? Colors.white : Colors.grey,
             ),
         ],
       ),
@@ -149,6 +158,7 @@ class OptionsBottomSheet extends StatelessWidget {
     required IconData icon,
     required String label,
     required VoidCallback onTap,
+    required Color colorText,
   }) {
     return InkWell(
       onTap: onTap,
@@ -172,7 +182,7 @@ class OptionsBottomSheet extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey[600],
+                color: colorText,
               ),
               textAlign: TextAlign.center,
             ),
@@ -183,6 +193,7 @@ class OptionsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildMainOptions(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Column(
       children: [
         _buildOptionTile(
@@ -193,6 +204,8 @@ class OptionsBottomSheet extends StatelessWidget {
             Navigator.pop(context);
             onToggleBookmark();
           },
+          colorText: isDark ? Colors.white : Colors.grey,
+          defaultColor: isDark ? Colors.white : Colors.grey,
         ),
         _buildOptionTile(
           icon: Icons.favorite_rounded,
@@ -202,6 +215,8 @@ class OptionsBottomSheet extends StatelessWidget {
             Navigator.pop(context);
             onToggleFavorite();
           },
+          colorText: isDark ? Colors.white : Colors.grey,
+          defaultColor: isDark ? Colors.white : Colors.grey,
         ),
       ],
     );
@@ -212,17 +227,20 @@ class OptionsBottomSheet extends StatelessWidget {
     required String title,
     required VoidCallback onTap,
     Color? iconColor,
+    required Color colorText,
+    required Color defaultColor
   }) {
     return ListTile(
       leading: Icon(
         icon,
-        color: iconColor ?? Colors.grey[600],
+        color: iconColor ?? defaultColor,
       ),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
+          color: colorText,
         ),
       ),
       onTap: onTap,

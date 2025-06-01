@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Are you sure you want to delete",
     ),
     "author": MessageLookupByLibrary.simpleMessage("Author"),
+    "back": MessageLookupByLibrary.simpleMessage("Back"),
     "bookInformation": MessageLookupByLibrary.simpleMessage("Book information"),
     "bookmark": MessageLookupByLibrary.simpleMessage("Bookmark"),
     "bookmarkImportantPages": MessageLookupByLibrary.simpleMessage(
@@ -58,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bookmarkedPage": MessageLookupByLibrary.simpleMessage("Bookmarked Page"),
     "books": MessageLookupByLibrary.simpleMessage("Books"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "clear": MessageLookupByLibrary.simpleMessage("Clear"),
     "close": MessageLookupByLibrary.simpleMessage("Close"),
     "comment": MessageLookupByLibrary.simpleMessage("Comment"),
     "darkMode": MessageLookupByLibrary.simpleMessage("Dark Mode"),
@@ -169,6 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Rename successful",
     ),
     "save": MessageLookupByLibrary.simpleMessage("Save"),
+    "searchForFiles": MessageLookupByLibrary.simpleMessage("Search for files"),
     "searchInDocuments": MessageLookupByLibrary.simpleMessage(
       "Search in documents",
     ),
@@ -202,6 +205,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Try changing your search keywords or filters",
         ),
+    "tryDifferentKeywords": MessageLookupByLibrary.simpleMessage(
+      "Try different keywords",
+    ),
     "unBookmark": MessageLookupByLibrary.simpleMessage("UnBookmark"),
     "unBookmarked": MessageLookupByLibrary.simpleMessage("Unbookmarked"),
     "unableToLoadImage": MessageLookupByLibrary.simpleMessage(

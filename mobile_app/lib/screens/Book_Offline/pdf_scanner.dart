@@ -2,14 +2,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path/path.dart' as path;
-import 'package:share_plus/share_plus.dart';
-import '../../generated/l10n.dart';
-import '../../services/BookMarkService.dart';
-import '../../services/FavoriteService.dart';
-import '../../services/PdfSearchDelegate.dart';
+import 'package:provider/provider.dart';
+import '../../Providers/ThemeProvider.dart';
+import 'PdfScannerWidgets/Search/PdfSearchDelegate.dart';
 import '../../services/permissions/dataAccess_permisson.dart';
+import 'PdfScannerWidgets/AppBar.dart';
+import 'PdfScannerWidgets/ListItem.dart';
+import 'PdfScannerWidgets/OptionBottom.dart';
+import 'PdfScannerWidgets/Supporting/Dialog/DeleteDialog.dart';
+import 'PdfScannerWidgets/Supporting/Dialog/RenameDialog.dart';
+import 'PdfScannerWidgets/Supporting/EmptyState.dart';
+import 'PdfScannerWidgets/Supporting/Loading.dart';
 import 'PdfViewerPage.dart';
-
 
 class PdfListScreen extends StatefulWidget {
   const PdfListScreen({super.key});
@@ -20,105 +24,43 @@ class PdfListScreen extends StatefulWidget {
 
 class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true; // Giữ trạng thái màn hình khi chuyển tab
-  String _selectedSortOption = 'name_asc'; // Mặc định sắp xếp theo tên (A-Z)
+  bool get wantKeepAlive => true;
 
-
+  String _selectedSortOption = 'name_asc';
   List<File> _pdfFiles = [];
   int _filesToShow = 10;
   bool _isLoading = true;
   bool _isLoadingMore = false;
 
-  bool _isMarked = false;
-  bool _isFavorite = false;
-
   @override
   void initState() {
     super.initState();
-    Hive.openBox('markedPages');
-    Hive.openBox('favoriteBooks');
-    setState(() {
-
-    });
-    _loadFilesWithDelay();
+    _initializeApp();
   }
 
-  //////////////////////////////////////////////BOOKMARKS
-  Future<void> _checkMarkedPage(String fileName) async {
-    try {
-      final data = await BookmarkService.getMarkedPage(fileName);
-      if (!mounted) return;
-      final markedPage = data?['page'];
-      final note = data?['note'];
-
-      if (markedPage != null) {
-        setState(() => _isMarked = true);
-      }
-
-      if (note != null) {
-        debugPrint('Note: $note');
-      }
-    } catch (e) {
-      debugPrint('Error checking marked page: $e');
-    }
+  Future<void> _initializeApp() async {
+    await Hive.openBox('markedPages');
+    await Hive.openBox('favoriteBooks');
+    await _loadFilesWithDelay();
   }
 
-  void _toggleMarkedPage(File file) {
-    if (_isMarked) {
-      BookmarkService.removeMarkedPage(path.basename(file.path));
-      setState(() => _isMarked = false);
-    } else {
-      BookmarkService.saveMarkedPage(path.basename(file.path), 1, S.of(context).temporary_note, "");
-      setState(() {
-        _isMarked = true;
-      });
-    }
-  }
-  //////////////////////////////////////////////
-
-
-  /// Chức năng yêu thích
-  Future<void> _checkFavoriteStatus(String fileName) async {
-    final isFavorite = await FavoriteService.isFavorite(fileName);
-    setState(() => _isFavorite = isFavorite);
-  }
-
-  void _toggleFavorite(File file) {
-    try {
-      if (_isFavorite) {
-        FavoriteService.removeFavorite(path.basename(file.path));
-        setState(() => _isFavorite = false);
-      } else {
-        FavoriteService.addFavorite(path.basename(file.path), "");
-        setState(() => _isFavorite = true);
-      }
-    } catch (e) {
-      debugPrint('Error toggling favorite: $e');
-    }
-  }
-  //////////////////////////////////////////////
-
-
-  ////////////////////////////////////////////// LOAD FILE
   Future<void> _loadFilesWithDelay() async {
     _pdfFiles = await requestPermissionAndLoadFiles(
         context,
         _loadPdfFiles,
         _loadFilesWithDelay);
     setState(() => _isLoading = false);
-    await Future.delayed(Duration(milliseconds: 1500)); // Giữ vòng tròn loading 3-5 giây
+    await Future.delayed(Duration(milliseconds: 1500));
   }
 
   Future<List<File>> _loadPdfFiles() async {
     Directory downloadDir = Directory('/storage/emulated/0/Download');
     if (await downloadDir.exists()) {
       List<FileSystemEntity> files = downloadDir.listSync();
-      List<File> filteredFiles = [];
-      filteredFiles = files
+      List<File> filteredFiles = files
           .where((file) => file.path.endsWith('.pdf'))
           .map((file) => File(file.path))
           .toList();
-      // Sắp xếp các tệp PDF theo tên (A-Z)
       _sortFiles(filteredFiles);
       return filteredFiles;
     }
@@ -138,415 +80,146 @@ class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveCl
     });
   }
 
-  void _openPdfFile(File file) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => PdfViewerPage(file: file)));
+  void _onSortChanged(String sortOption) {
+    setState(() {
+      _selectedSortOption = sortOption;
+      _sortFiles();
+    });
   }
 
-  void _renameFile(BuildContext context, File file) {
-    TextEditingController _controller = TextEditingController(text: path.basenameWithoutExtension(file.path));
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.black87,
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.edit, color: Colors.white, size: 30),
-                  SizedBox(width: 10),
-                  Text(
-                    S.of(context).rename,
-                    style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _controller,
-                style: TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Color(0xFF2A2A2A),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.close, color: Colors.white),
-                    onPressed: () => _controller.clear(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[800],
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: Text(S.of(context).cancel, style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        String newName = _controller.text.trim();
-                        if (newName.isNotEmpty && newName != path.basenameWithoutExtension(file.path)) {
-                          String newPath = path.join(file.parent.path, "$newName.pdf");
-
-                          if (await File(newPath).exists()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("${S.of(context).fileNameAlreadyExists}!")),
-                            );
-                          } else {
-                            await file.rename(newPath);
-                            setState(() {
-                              _pdfFiles[_pdfFiles.indexOf(file)] = File(newPath);
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("${S.of(context).renameSuccessful}!")),
-                            );
-                          }
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: Text("OK", style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+  void _openPdfFile(File file) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PdfViewerPage(file: file))
     );
   }
 
   void _showOptionsMenu(BuildContext context, File file) {
-    _isMarked = false;
-    _isFavorite = false;
-    _checkMarkedPage(path.basename(file.path));
-    _checkFavoriteStatus(path.basename(file.path));
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.picture_as_pdf, color: Colors.red, size: 40),
-                title: Text(
-                  path.basename(file.path),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                subtitle: Text(
-                  file.path,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ValueListenableBuilder(
-                      valueListenable: Hive.box('markedPages').listenable(),
-                      builder: (context, box, widget) {
-                        return IconButton(
-                          icon: _isMarked ? Icon(Icons.bookmark, color: Colors.amber) : Icon(Icons.bookmark_border, color: Colors.grey),
-                          onPressed: () {
-                            _toggleMarkedPage(file);
-                          },
-                        );
-                      },
-                    ),
-
-                    // Nút Favorite
-                    ValueListenableBuilder(
-                      valueListenable: Hive.box('favoriteBooks').listenable(),
-                      builder: (context, box, widget) {
-                        return IconButton(
-                          icon: _isFavorite ? Icon(Icons.favorite, color: Colors.redAccent) : Icon(Icons.favorite_border, color: Colors.grey,),
-                          onPressed: () {
-                            _toggleFavorite(file);
-                          },
-                        );
-                      },
-                    ),
-
-                  ],
-                ),
-              ),
-
-              Divider(),
-              ListTile(
-                leading: Icon(Icons.edit),
-                title: Text(S.of(context).rename),
-                onTap: () {
-                  Navigator.pop(context);
-                  _renameFile(context, file);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.open_in_new),
-                title: Text(S.of(context).openFile),
-                onTap: () {
-                  Navigator.pop(context);
-                  _openPdfFile(file);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.share),
-                title: Text(S.of(context).share),
-                onTap: () async {
-                  Navigator.pop(context);
-                  await Share.shareXFiles([XFile(file.path)], text: "Xem tài liệu này");
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.delete),
-                title: Text(S.of(context).delete),
-                onTap: () {
-                  Navigator.pop(context);
-                  _deleteFile(file);
-                },
-              ),
-            ],
-          ),
-        );
-      },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => PdfOptionsBottomSheet(
+        file: file,
+        onRename: () => _showRenameDialog(file),
+        onOpen: () => _openPdfFile(file),
+        onDelete: () => _showDeleteDialog(file),
+      ),
     );
   }
 
-  void _deleteFile(File file) {
+  void _showRenameDialog(File file) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(S.of(context).deleteFile),
-        content: Text("${S.of(context).areYouSureYouWantToDelete} '${path.basename(file.path)}'?"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(S.of(context).cancel)),
-          TextButton(
-            onPressed: () {
-              file.deleteSync();
-              setState(() => _pdfFiles.remove(file));
-              Navigator.pop(context);
-            },
-            child: Text(S.of(context).delete, style: TextStyle(color: Colors.red)),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (context) => PdfRenameDialog(
+        file: file,
+        onRenamed: (newFile) {
+          setState(() {
+            final index = _pdfFiles.indexOf(file);
+            if (index != -1) {
+              _pdfFiles[index] = newFile;
+            }
+          });
+        },
       ),
     );
+  }
+
+  void _showDeleteDialog(File file) {
+    showDialog(
+      context: context,
+      builder: (context) => PdfDeleteDialog(
+        file: file,
+        onDeleted: () {
+          setState(() => _pdfFiles.remove(file));
+        },
+      ),
+    );
+  }
+
+  void _sortFiles([List<File>? filesToSort]) {
+    final files = filesToSort ?? _pdfFiles;
+
+    switch (_selectedSortOption) {
+      case 'name_asc':
+        files.sort((a, b) => path.basename(a.path).compareTo(path.basename(b.path)));
+        break;
+      case 'size':
+        files.sort((a, b) => a.lengthSync().compareTo(b.lengthSync()));
+        break;
+      case 'date':
+        files.sort((a, b) => a.lastModifiedSync().compareTo(b.lastModifiedSync()));
+        break;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.indigoAccent,
-        elevation: 0,
-        title: Text(
-          "📖${S.of(context).allYourFiles}📖",
-          style: TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.search,
-              color: Color(0xFF2D3142),
-            ),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: PdfSearchDelegate(_pdfFiles),
-              );
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.sort, color: Color(0xFF2D3142)),
-            onSelected: (String value) {
-              setState(() {
-                _selectedSortOption = value;
-                _sortFiles(); // Gọi lại hàm sắp xếp sau khi thay đổi giá trị
-              });
-            },
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem<String>(
-                value: 'name_asc',
-                child: Row(
-                  children: [
-                    if (_selectedSortOption == 'name_asc')
-                      Row(
-                        children: [
-                          Text('${S.of(context).name} (A-Z)', style: TextStyle(color: Colors.red)),
-                          SizedBox(width: 8),
-                          Icon(Icons.sort_by_alpha, color: Colors.red), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                    if (_selectedSortOption != 'name_asc')
-                      Row(
-                        children: [
-                          Text('${S.of(context).name} (A-Z)'),
-                          SizedBox(width: 8),
-                          Icon(Icons.sort_by_alpha_outlined, color: Colors.black26), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<String>(
-                value: 'size',
-                child: Row(
-                  children: [
-                    if (_selectedSortOption == 'size')
-                      Row(
-                        children: [
-                          Text(S.of(context).size, style: TextStyle(color: Colors.red)),
-                          SizedBox(width: 8),
-                          Icon(Icons.insert_drive_file_outlined, color: Colors.red), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                    if (_selectedSortOption != 'size')
-                      Row(
-                        children: [
-                          Text(S.of(context).size),
-                          SizedBox(width: 8),
-                          Icon(Icons.insert_drive_file_outlined, color: Colors.black26), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<String>(
-                value: 'date',
-                child: Row(
-                  children: [
-                    if (_selectedSortOption == 'date')
-                      Row(
-                        children: [
-                          Text(S.of(context).time, style: TextStyle(color: Colors.red)),
-                          SizedBox(width: 8),
-                          Icon(Icons.timer_sharp, color: Colors.red), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                    if (_selectedSortOption != 'date')
-                      Row(
-                        children: [
-                          Text(S.of(context).time),
-                          SizedBox(width: 8),
-                          Icon(Icons.timer_sharp, color: Colors.black26), // Biểu tượng check màu xanh
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      backgroundColor: Colors.white,
-      body: _isLoading
-          ? Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text("${S.of(context).waitAMinute}...",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-            ],
-          )) // Hiện loading 3-5 giây trước khi load dữ liệu
-          : _pdfFiles.isEmpty
-          ? Center(child: Text(S.of(context).pDFFileNotFound))
-          : NotificationListener<ScrollNotification>(
-        onNotification: (ScrollNotification scrollInfo) {
-          if (!_isLoadingMore && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            _loadMoreFiles();
-          }
-          return false;
-        },
-        child: ListView.builder(
-          itemCount: (_filesToShow < _pdfFiles.length) ? _filesToShow + 1 : _filesToShow,
-          itemBuilder: (context, index) {
-            if (index == _filesToShow) {
-              return Center(child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: CircularProgressIndicator(),
-              ));
-            }
-
-            File file = _pdfFiles[index];
-            return ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              leading: Icon(Icons.picture_as_pdf, color: Colors.red, size: 28),
-              title: Text(path.basename(file.path).replaceAll('.pdf', ''),
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
-              subtitle: Text('${_getFileSize(file)} · ${_getFormattedDate(file)}'),
-              onTap: () => _openPdfFile(file),
-              trailing: IconButton(
-                icon: Icon(Icons.more_vert),
-                onPressed: () => _showOptionsMenu(context, file),
-              ),
-            );
-          },
+      appBar: PdfAppBar(
+        selectedSortOption: _selectedSortOption,
+        onSortChanged: _onSortChanged,
+        onSearch: () => showSearch(
+          context: context,
+          delegate: PdfSearchDelegate(_pdfFiles),
         ),
       ),
+      backgroundColor: isDark ? Colors.black87 : Colors.grey[50],
+      body: _buildBody(),
     );
   }
 
-  String _getFileSize(File file) {
-    int bytes = file.lengthSync();
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(2)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
-  }
-
-  String _getFormattedDate(File file) {
-    DateTime lastModified = file.lastModifiedSync();
-    return '${lastModified.year}-${lastModified.month}-${lastModified.day}';
-  }
-
-  // Sửa hàm _sortFiles để nhận tham số danh sách file (dùng cho _loadPdfFiles)
-  void _sortFiles([List<File>? filesToSort]) {
-    final files = filesToSort ?? _pdfFiles;
-
-    if (_selectedSortOption == 'name_asc') {
-      files.sort((a, b) => path.basename(a.path).compareTo(path.basename(b.path)));
-    } else if (_selectedSortOption == 'size') {
-      files.sort((a, b) => a.lengthSync().compareTo(b.lengthSync()));
-    } else if (_selectedSortOption == 'date') {
-      files.sort((a, b) => a.lastModifiedSync().compareTo(b.lastModifiedSync()));
+  Widget _buildBody() {
+    if (_isLoading) {
+      return PdfLoadingWidget();
     }
+
+    if (_pdfFiles.isEmpty) {
+      return PdfEmptyState(
+        onReload: () async {
+          setState(() {
+            _isLoading = true;
+          });
+          await _loadFilesWithDelay();
+        },
+      );
+    }
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (!_isLoadingMore &&
+            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          _loadMoreFiles();
+        }
+        return false;
+      },
+      child: ListView.separated(
+        padding: EdgeInsets.all(16),
+        itemCount: (_filesToShow < _pdfFiles.length) ? _filesToShow + 1 : _filesToShow,
+        separatorBuilder: (context, index) => SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          if (index == _filesToShow) {
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.indigoAccent),
+                ),
+              ),
+            );
+          }
+
+          return PdfListItem(
+            file: _pdfFiles[index],
+            onTap: () => _openPdfFile(_pdfFiles[index]),
+            onMoreOptions: () => _showOptionsMenu(context, _pdfFiles[index]),
+          );
+        },
+      ),
+    );
   }
-
 }
-
-

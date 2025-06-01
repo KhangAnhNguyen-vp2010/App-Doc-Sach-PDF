@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/ThemeProvider.dart';
 import '../../../../models/models.dart';
 import 'BooksGrid.dart';
 import 'BooksList.dart';
@@ -18,12 +20,13 @@ class BookStoreContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     if (books.isEmpty) {
       return const EmptyState();
     }
 
     return Container(
-      color: Colors.grey[50],
+      color: isDark ? Colors.black87 : Colors.grey[50],
       child: isGridView
           ? BooksGrid(books: books, onBookTap: onBookTap)
           : BooksList(books: books, onBookTap: onBookTap),

@@ -1,6 +1,8 @@
 // widgets/loading_overlay.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../Providers/ThemeProvider.dart';
 import '../../../generated/l10n.dart';
 
 class LoadingOverlay extends StatelessWidget {
@@ -13,6 +15,7 @@ class LoadingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
       color: Colors.white.withOpacity(0.9),
       child: Center(
@@ -37,7 +40,7 @@ class LoadingOverlay extends StatelessWidget {
               '${S.of(context).pleaseWaitAMoment}...',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
+                color: isDark ? Colors.white : Colors.grey,
               ),
             ),
           ],

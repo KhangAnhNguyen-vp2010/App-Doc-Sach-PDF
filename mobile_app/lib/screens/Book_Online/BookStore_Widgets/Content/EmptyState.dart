@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../Providers/ThemeProvider.dart';
 import '../../../../generated/l10n.dart';
 
 class EmptyState extends StatelessWidget {
@@ -7,6 +9,7 @@ class EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -16,33 +19,36 @@ class EmptyState extends StatelessWidget {
               minHeight: constraints.maxHeight,
             ),
             child: IntrinsicHeight(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.search_off,
-                      size: 80,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      S.of(context).noBooksFound,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w600,
+              child: Container(
+                color: isDark ? Colors.black87 : Colors.white,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.search_off,
+                        size: 80,
+                        color: Colors.grey[400],
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      S.of(context).tryChangingYourSearchKeywordsOrFilters,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[500],
+                      const SizedBox(height: 16),
+                      Text(
+                        S.of(context).noBooksFound,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        S.of(context).tryChangingYourSearchKeywordsOrFilters,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

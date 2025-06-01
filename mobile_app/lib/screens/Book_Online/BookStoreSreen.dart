@@ -26,7 +26,7 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
   late Animation<double> _fadeAnimation;
 
   String searchQuery = '';
-  String selectedCategory = 'Tất cả';
+  String selectedCategory = 'All';
   String selectedSort = "Mới nhất";
   bool isGridView = true;
 
@@ -64,7 +64,7 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
     realm = Realm(config);
 
     books = realm.all<Book>().toList();
-    categories = [Category('all', 'Tất cả')] + realm.all<Category>().toList();
+    categories = [Category('all', 'All')] + realm.all<Category>().toList();
 
     _filterAndSortBooks();
     _animationController.forward();
@@ -76,7 +76,7 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
         final matchSearch = book.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
             book.author.toLowerCase().contains(searchQuery.toLowerCase());
 
-        final matchCategory = selectedCategory == 'Tất cả' ||
+        final matchCategory = selectedCategory == 'All' ||
             book.category?.name == selectedCategory;
 
         return matchSearch && matchCategory;

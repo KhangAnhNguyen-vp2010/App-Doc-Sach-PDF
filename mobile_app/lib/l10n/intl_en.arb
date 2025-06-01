@@ -124,5 +124,10 @@
 
   "selectTheme": "Select Theme",
   "lightMode": "Light Mode",
-  "darkMode": "Dark Mode"
+  "darkMode": "Dark Mode",
+
+  "back": "Back",
+  "clear": "Clear",
+  "searchForFiles": "Search for files",
+  "tryDifferentKeywords": "Try different keywords"
 }

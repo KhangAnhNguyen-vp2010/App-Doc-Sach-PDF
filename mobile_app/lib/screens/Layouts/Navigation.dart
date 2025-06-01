@@ -21,10 +21,7 @@ class NavApp extends StatefulWidget {
 
 class _NavAppState extends State<NavApp> {
   int _selectedIndex = 1; // Chỉ số của tab được chọn
-  String title = "Books";
-  final PageController _pageController = PageController(initialPage: 1);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
 
   final List<Widget> _screens = [
     PdfListScreen(),
@@ -34,15 +31,15 @@ class _NavAppState extends State<NavApp> {
     setState(() {
       _selectedIndex = index;
     });
-    switch(index){
+  }
+  String getTitleByIndex(int index) {
+    switch (index) {
       case 0:
-        title = S.of(context).allFiles;
-        break;
+        return S.of(context).allFiles;
       case 1:
-        title = S.of(context).books;
-        break;
+        return S.of(context).books;
       default:
-        break;
+        return '';
     }
   }
 
@@ -51,7 +48,8 @@ class _NavAppState extends State<NavApp> {
     final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Scaffold(
       key: _scaffoldKey,
-      drawer: Drawer(  // Thêm drawer
+      drawer: Drawer( // Thêm drawer
+        backgroundColor: isDark ? Colors.black87 : Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
@@ -83,8 +81,13 @@ class _NavAppState extends State<NavApp> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text(S.of(context).settings),
+              leading: Icon(Icons.settings, color: isDark ? Colors.white : Color(0xFF2D3142)),
+              title: Text(
+                S.of(context).settings,
+                style: TextStyle(
+                    color: isDark ? Colors.white : Color(0xFF2D3142)
+                )
+              ),
               onTap: () {
                 Navigator.push(
                   context,
@@ -93,8 +96,13 @@ class _NavAppState extends State<NavApp> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.thumb_up),
-              title: Text(S.of(context).appReview),
+              leading: Icon(Icons.thumb_up, color: isDark ? Colors.white : Color(0xFF2D3142)),
+              title: Text(
+                  S.of(context).appReview,
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Color(0xFF2D3142)
+                  )
+              ),
               onTap: () {
                 // Xử lý khi nhấn Đánh giá ứng dụng
                 showDialog(
@@ -104,8 +112,13 @@ class _NavAppState extends State<NavApp> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.message),
-              title: Text(S.of(context).comment),
+              leading: Icon(Icons.message, color: isDark ? Colors.white : Color(0xFF2D3142)),
+              title: Text(
+                  S.of(context).comment,
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Color(0xFF2D3142)
+                  )
+              ),
               onTap: () {
                 // Xử lý khi nhấn Nhận xét
                 showDialog(
@@ -115,8 +128,13 @@ class _NavAppState extends State<NavApp> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.security),
-              title: Text(S.of(context).privacyPolicy),
+              leading: Icon(Icons.security, color: isDark ? Colors.white : Color(0xFF2D3142)),
+              title: Text(
+                  S.of(context).privacyPolicy,
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Color(0xFF2D3142)
+                  )
+              ),
               onTap: () {
                 // Xử lý khi nhấn Chính sách bảo mật
                 showDialog(
@@ -126,8 +144,13 @@ class _NavAppState extends State<NavApp> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.apps),
-              title: Text(S.of(context).moreApplications),
+              leading: Icon(Icons.apps, color: isDark ? Colors.white : Color(0xFF2D3142)),
+              title: Text(
+                  S.of(context).moreApplications,
+                  style: TextStyle(
+                      color: isDark ? Colors.white : Color(0xFF2D3142)
+                  )
+              ),
               onTap: () {
                 // Xử lý khi nhấn Nhiều ứng dụng hơn
                 showDialog(
@@ -150,7 +173,7 @@ class _NavAppState extends State<NavApp> {
           },
         ),
         title: Text(
-          title,
+          getTitleByIndex(_selectedIndex),
           style: TextStyle(
             color: isDark ? Colors.white : Color(0xFF2D3142),
             fontWeight: FontWeight.bold,

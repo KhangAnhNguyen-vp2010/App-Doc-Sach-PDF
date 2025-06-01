@@ -3,9 +3,9 @@ import 'package:mobile_app/screens/Setting/Widgets/ThemeDialog.dart';
 import 'package:provider/provider.dart';
 import '../../Providers/ThemeProvider.dart';
 import '../../generated/l10n.dart';
-import '../List_PDF_Bookmarks/MarkedPagesScreen.dart';
-import '../List_PDF_Favorite/FavoritedPagesScreen.dart';
 import 'Widgets/LanguageDialog.dart';
+import 'Widgets/List_PDF_Bookmarks/MarkedPagesScreen.dart';
+import 'Widgets/List_PDF_Favorite/FavoritedPagesScreen.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key});

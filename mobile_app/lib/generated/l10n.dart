@@ -950,6 +950,36 @@ class S {
   String get darkMode {
     return Intl.message('Dark Mode', name: 'darkMode', desc: '', args: []);
   }
+
+  /// `Back`
+  String get back {
+    return Intl.message('Back', name: 'back', desc: '', args: []);
+  }
+
+  /// `Clear`
+  String get clear {
+    return Intl.message('Clear', name: 'clear', desc: '', args: []);
+  }
+
+  /// `Search for files`
+  String get searchForFiles {
+    return Intl.message(
+      'Search for files',
+      name: 'searchForFiles',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Try different keywords`
+  String get tryDifferentKeywords {
+    return Intl.message(
+      'Try different keywords',
+      name: 'tryDifferentKeywords',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

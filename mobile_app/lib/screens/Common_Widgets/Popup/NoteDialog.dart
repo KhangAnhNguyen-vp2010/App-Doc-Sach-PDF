@@ -1,6 +1,8 @@
 // widgets/note_dialog.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../Providers/ThemeProvider.dart';
 import '../../../generated/l10n.dart';
 
 class NoteDialog extends StatefulWidget {
@@ -21,7 +23,9 @@ class _NoteDialogState extends State<NoteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Dialog(
+      backgroundColor: isDark ? Colors.black87 : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
@@ -42,6 +46,7 @@ class _NoteDialogState extends State<NoteDialog> {
   }
 
   Widget _buildHeader() {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Column(
       children: [
         Container(
@@ -63,6 +68,7 @@ class _NoteDialogState extends State<NoteDialog> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         const SizedBox(height: 8),
@@ -101,6 +107,7 @@ class _NoteDialogState extends State<NoteDialog> {
   }
 
   Widget _buildButtons(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Row(
       children: [
         Expanded(
@@ -117,6 +124,7 @@ class _NoteDialogState extends State<NoteDialog> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
           ),

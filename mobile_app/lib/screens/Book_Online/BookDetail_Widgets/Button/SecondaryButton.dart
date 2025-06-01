@@ -1,5 +1,8 @@
 // Nút phụ (bookmark, share)
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../Providers/ThemeProvider.dart';
 
 class SecondaryButton extends StatelessWidget {
   final IconData icon;
@@ -14,15 +17,17 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return SizedBox(
       height: 48,
       child: OutlinedButton.icon(
-        icon: Icon(icon, size: 20),
+        icon: Icon(icon, size: 20, color: isDark ? Colors.white : Colors.black87,),
         label: Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
+            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         style: OutlinedButton.styleFrom(

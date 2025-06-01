@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../../Providers/ThemeProvider.dart';
 import '../../../../models/models.dart';
 import 'CategoryFilters.dart';
 import 'SortDropdown.dart';
@@ -23,8 +25,9 @@ class BookStoreFilters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
-      color: Colors.white,
+      color: isDark ? Colors.black87 : Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
