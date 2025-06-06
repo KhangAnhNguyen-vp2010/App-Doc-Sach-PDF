@@ -1,13 +1,13 @@
 {
   "@@locale": "vi",
   "allTrustedPDFReader": "Đọc sách PDF KhangPhuHuy",
-  "readAnnotateAndManagePDFsEasily": "Đọc sách - Để bớt ngu",
+  "readAnnotateAndManagePDFsEasily": "Đọc sách - Khai mở tri thức",
   "allFiles": "Tất cả các file",
   "books": "Sách",
   "history": "Lịch sử",
   "allTrusted": "Thư viện miễn phí",
   "pDFReader": "Sách PDF",
-  "version2025": "Phiên bản 2025 - Được phát triển bởi KhangAnhHUIT",
+  "version2025": "Phiên bản 2025 - Được phát triển bởi KhangPhuHuyHUIT",
   "appReview": "Đánh giá",
   "comment": "Nhận xét",
   "privacyPolicy": "Chính sách bảo mật",
@@ -129,5 +129,13 @@
   "back": "Quay lại",
   "clear": "Xóa",
   "searchForFiles": "Tìm kiếm tệp",
-  "tryDifferentKeywords": "Hãy thử từ khóa khác"
+  "tryDifferentKeywords": "Hãy thử từ khóa khác",
+
+  "thereWasAProblemConnecting": "Có sự cố khi kết nối",
+  "thereWasAProblemLoadingData": "Đã xảy ra sự cố khi tải dữ liệu",
+  "pleaseCheckYourNetworkOrTryAgainLater": "Vui lòng kiểm tra mạng hoặc thử lại sau.",
+
+  "reLoad": "Tải lại",
+
+  "noPDFFilesFoundInDownloadFolder": "Không tìm thấy file PDF nào trong thư mục Download"
 }

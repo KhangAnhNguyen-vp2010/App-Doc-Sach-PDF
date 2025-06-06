@@ -1,0 +1,63 @@
+## Build results
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code
+.vscode/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## DotNet CLI
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ASP.NET Core Secrets
+secrets.json
+
+## Logs
+*.log
+logs/
+*.tlog
+
+## IIS
+.vs/
+.vsconfig
+*.dbmdl
+
+## Rider (JetBrains)
+.idea/
+
+## Configuration files
+appsettings.Development.json
+appsettings.Local.json
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+## Others
+*.DS_Store
+*.class
+*.tmp
+*.bak
+*.orig
+
+# Thư mục publish
+publish/
+wwwroot/
+
+# Migrations nếu bạn không muốn track
+#migrations/
+
+# Node.js nếu có dùng frontend
+node_modules/

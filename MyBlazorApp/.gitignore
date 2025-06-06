@@ -1,0 +1,59 @@
+## Build folders
+bin/
+obj/
+artifacts/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio folder
+.vs/
+.vscode/
+
+## ASP.NET Core secrets
+secrets.json
+
+## IIS Express
+*.vspscc
+*.vssscc
+*.dbmdl
+*.db
+
+## ASP.NET generated files
+ScaffoldingReadMe.txt
+
+## Logs
+*.log
+
+## Publish folder (tùy chọn)
+publish/
+wwwroot/dist/
+wwwroot/node_modules/
+
+## Package management
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+## Node.js (nếu dùng JS libraries trong wwwroot)
+node_modules/
+
+## npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+## JetBrains Rider
+.idea/
+
+## System files
+.DS_Store
+Thumbs.db
+
+## Blazor specific (nếu có)
+wwwroot/css/app.css
+wwwroot/js/app.js

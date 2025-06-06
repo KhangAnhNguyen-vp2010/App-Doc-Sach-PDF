@@ -129,5 +129,12 @@
   "back": "Back",
   "clear": "Clear",
   "searchForFiles": "Search for files",
-  "tryDifferentKeywords": "Try different keywords"
+  "tryDifferentKeywords": "Try different keywords",
+
+  "thereWasAProblemConnecting": "There was a problem connecting",
+  "thereWasAProblemLoadingData": "There was a problem loading data",
+  "pleaseCheckYourNetworkOrTryAgainLater": "Please check your network or try again later.",
+  "reLoad": "Reload",
+
+  "noPDFFilesFoundInDownloadFolder": "No PDF files found in Download folder"
 }

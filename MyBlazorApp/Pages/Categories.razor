@@ -1,0 +1,191 @@
+@page "/categories"
+@inject HttpClient Http
+@inject IJSRuntime JS
+@using System.Net.Http.Json
+@using MyBlazorApp.Models
+
+<button class="btn btn-primary mb-3" @onclick="ShowAddModal">Thêm thể loại mới</button>
+
+@if (categories == null)
+{
+    <div class="text-center my-5">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else if (!categories.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        Không có thể loại nào.
+    </div>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var category in categories)
+        {
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>@category.Name</strong> <br />
+                    <small>ID: @category.Id</small>
+                </div>
+                <div>
+                    <button class="btn btn-sm btn-warning me-2" @onclick="() => ShowEditModal(category.Id)">Sửa</button>
+                    <button class="btn btn-sm btn-danger" @onclick="() => DeleteCategory(category.Id)">Xóa</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (showFormModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content p-4">
+                <h5 class="modal-title mb-3">@((isEditMode ? "Sửa thể loại" : "Thêm thể loại mới"))</h5>
+
+                <EditForm Model="categoryModel" OnValidSubmit="HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label">ID</label>
+                        <InputText class="form-control" @bind-Value="categoryModel.Id" disabled="@isEditMode" />
+                        <ValidationMessage For="@(() => categoryModel.Id)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tên thể loại</label>
+                        <InputText class="form-control" @bind-Value="categoryModel.Name" />
+                        <ValidationMessage For="@(() => categoryModel.Name)" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary me-2">@((isEditMode) ? "Cập nhật" : "Thêm")</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseModal">Hủy</button>
+                </EditForm>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger mt-3">@errorMessage</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<TheloaiDTO>? categories;
+    private bool showFormModal = false;
+    private bool isEditMode = false;
+    private TheloaiCreateDTO categoryModel = new();
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        try
+        {
+            categories = await Http.GetFromJsonAsync<List<TheloaiDTO>>("http://localhost:5140/api/Theloai");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Lỗi tải thể loại: {ex.Message}");
+        }
+    }
+
+    private void ShowAddModal()
+    {
+        isEditMode = false;
+        categoryModel = new TheloaiCreateDTO();
+        errorMessage = null;
+        showFormModal = true;
+    }
+
+    private void ShowEditModal(string id)
+    {
+        isEditMode = true;
+        errorMessage = null;
+        var category = categories?.FirstOrDefault(c => c.Id == id);
+        if (category != null)
+        {
+            categoryModel = new TheloaiCreateDTO
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+        }
+        showFormModal = true;
+    }
+
+    private void CloseModal()
+    {
+        showFormModal = false;
+        errorMessage = null;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        errorMessage = null;
+
+        try
+        {
+            if (isEditMode)
+            {
+                // Gọi API PUT update
+                var updateDto = new TheloaiUpdateDTO { Name = categoryModel.Name };
+                var response = await Http.PutAsJsonAsync($"http://localhost:5140/api/Theloai/{categoryModel.Id}", updateDto);
+                if (!response.IsSuccessStatusCode)
+                {
+                    errorMessage = $"Lỗi cập nhật: {response.ReasonPhrase}";
+                    return;
+                }
+            }
+            else
+            {
+                // Gọi API POST create
+                var response = await Http.PostAsJsonAsync("http://localhost:5140/api/Theloai", categoryModel);
+                if (!response.IsSuccessStatusCode)
+                {
+                    errorMessage = $"Lỗi thêm mới: {response.ReasonPhrase}";
+                    return;
+                }
+            }
+
+            showFormModal = false;
+            await LoadCategories();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Lỗi khi lưu thể loại: " + ex.Message;
+        }
+    }
+
+    private async Task DeleteCategory(string id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", "Bạn có chắc chắn muốn xóa thể loại này không?");
+        if (!confirm) return;
+
+        try
+        {
+            var response = await Http.DeleteAsync($"http://localhost:5140/api/Theloai/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadCategories();
+            }
+            else
+            {
+                errorMessage = $"Lỗi khi xóa: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Lỗi khi xóa thể loại: " + ex.Message;
+        }
+    }
+}

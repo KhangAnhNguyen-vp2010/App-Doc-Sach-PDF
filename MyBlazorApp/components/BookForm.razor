@@ -1,0 +1,154 @@
+@using MyBlazorApp.Models
+@inject HttpClient Http
+@code {
+    [Parameter] public EventCallback OnSuccess { get; set; }
+    [Parameter] public bool IsEdit { get; set; }
+    [Parameter] public string? BookId { get; set; }
+
+    private SachCreateDTO book = new();
+    private string? errorMessage;
+    private bool isLoading = true;
+    private List<TheloaiDTO>? categories = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        errorMessage = null;
+        try
+        {
+            categories = await Http.GetFromJsonAsync<List<TheloaiDTO>>("http://localhost:5140/api/Theloai");
+
+            if (IsEdit && !string.IsNullOrEmpty(BookId))
+            {
+                var sach = await Http.GetFromJsonAsync<SachDTO>($"http://localhost:5140/api/Sach/{BookId}");
+                if (sach != null)
+                {
+                    book = new SachCreateDTO
+                    {
+                        Title = sach.Title,
+                        Author = sach.Author,
+                        Description = sach.Description,
+                        CoverUrl = sach.CoverUrl,
+                        PdfUrl = sach.PdfUrl,
+                        PageCount = sach.PageCount,
+                        PublicationYear = sach.PublicationYear,
+                        CategoryId = sach.Category?.Id
+                    };
+                }
+                else errorMessage = "Không tìm thấy sách.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+        isLoading = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        errorMessage = null;
+        try
+        {
+            HttpResponseMessage response;
+            if (IsEdit && BookId != null)
+            {
+                response = await Http.PutAsJsonAsync($"http://localhost:5140/api/Sach/{BookId}", book);
+            }
+            else
+            {
+                response = await Http.PostAsJsonAsync("http://localhost:5140/api/Sach", book);
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                await OnSuccess.InvokeAsync();
+            }
+            else
+            {
+                errorMessage = $"Lỗi: {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="book" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">Tiêu đề</label>
+            <InputText class="form-control" @bind-Value="book.Title" />
+            <ValidationMessage For="@(() => book.Title)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tác giả</label>
+            <InputText class="form-control" @bind-Value="book.Author" />
+            <ValidationMessage For="@(() => book.Author)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <InputTextArea class="form-control" @bind-Value="book.Description" />
+            <ValidationMessage For="@(() => book.Description)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">URL ảnh bìa</label>
+            <InputText class="form-control" @bind-Value="book.CoverUrl" />
+            <ValidationMessage For="@(() => book.CoverUrl)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">URL PDF</label>
+            <InputText class="form-control" @bind-Value="book.PdfUrl" />
+            <ValidationMessage For="@(() => book.PdfUrl)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Số trang</label>
+            <InputNumber class="form-control" @bind-Value="book.PageCount" />
+            <ValidationMessage For="@(() => book.PageCount)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Năm xuất bản</label>
+            <InputNumber class="form-control" @bind-Value="book.PublicationYear" />
+            <ValidationMessage For="@(() => book.PublicationYear)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Thể loại</label>
+            <InputSelect class="form-select" @bind-Value="book.CategoryId">
+                <option value="">-- Chọn thể loại --</option>
+                @if (categories != null)
+                {
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => book.CategoryId)" />
+        </div>
+
+
+        <button type="submit" class="btn btn-success">@((IsEdit ? "Lưu thay đổi" : "Thêm sách"))</button>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@errorMessage</div>
+        }
+    </EditForm>
+}
