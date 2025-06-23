@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:mobile_app/Providers/ThemeProvider.dart';
 import 'package:mobile_app/screens/Layouts/SplashScreen.dart';
-import 'package:mobile_app/services/realm_service.dart';
 import 'package:provider/provider.dart';
+import 'Providers/BookProvider.dart';
 import 'Providers/LanguageProvider.dart';
 import 'generated/l10n.dart';  // import file sinh ra
 
@@ -23,7 +23,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
-        ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider)
+        ChangeNotifierProvider<ThemeProvider>.value(value: themeProvider),
+        ChangeNotifierProvider(create: (_) => BookProvider()),
       ],
       child: const MyApp(),
     ),

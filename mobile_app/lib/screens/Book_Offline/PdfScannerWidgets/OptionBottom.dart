@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../Providers/ThemeProvider.dart';
 import '../../../generated/l10n.dart';
-import '../../../services/BookMarkService.dart';
-import '../../../services/FavoriteService.dart';
+import '../../../services/BookServices/BookMarkService.dart';
+import '../../../services/BookServices/FavoriteService.dart';
 
 class PdfOptionsBottomSheet extends StatefulWidget {
   final File file;

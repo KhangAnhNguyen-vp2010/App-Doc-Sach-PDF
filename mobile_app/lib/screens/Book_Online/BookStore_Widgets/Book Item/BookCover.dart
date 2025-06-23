@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 
 class BookCover extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
 
   const BookCover({super.key, required this.book});
 
@@ -20,6 +21,7 @@ class BookCover extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             Image.network(
+              // book.coverUrl,
               book.coverUrl,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(

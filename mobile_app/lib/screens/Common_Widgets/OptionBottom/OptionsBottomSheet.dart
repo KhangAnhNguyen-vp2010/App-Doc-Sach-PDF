@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../Providers/ThemeProvider.dart';
 import '../../../generated/l10n.dart';
-import '../../../services/downloadBook.dart';
+import '../../../services/BookServices/downloadBook.dart';
 
 class OptionsBottomSheet extends StatelessWidget {
   final String bookName;

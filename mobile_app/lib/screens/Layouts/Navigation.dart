@@ -8,6 +8,7 @@ import '../../generated/l10n.dart';
 import '../Book_Offline/pdf_scanner.dart';
 import '../Book_Online/BookStoreSreen.dart';
 import '../Setting/Menu.dart';
+import 'PopupPromotion.dart';
 import 'Widgets/rating_dialog.dart';
 
 
@@ -42,6 +43,20 @@ class _NavAppState extends State<NavApp> {
         return '';
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Gọi popup sau khi widget đã render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (context) => const PopupPromotion(),
+      );
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:realm/realm.dart';
+import 'package:http/http.dart' as http;
+import 'package:mobile_app/services/api/api_urls.dart';
 import '../../generated/l10n.dart';
-import '../../models/models.dart';
+import '../../models/api_book.dart';
+import '../../models/api_category.dart';
 import 'BookDetailScreen.dart';
 import 'BookStore_Widgets/Content/BookStoreContent.dart';
 import 'BookStore_Widgets/Filter/BookStoreFilters.dart';
 import 'BookStore_Widgets/Header/BookStoreHeader.dart';
+import 'BookStore_Widgets/NetworkChecker.dart';
 
 class BookStoreHomePage extends StatefulWidget {
   const BookStoreHomePage({super.key});
@@ -17,10 +21,10 @@ class BookStoreHomePage extends StatefulWidget {
 
 class _BookStoreHomePageState extends State<BookStoreHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  late Realm realm;
-  late List<Book> books;
-  List<Book> displayedBooks = [];
-  List<Category> categories = [];
+
+  List<ApiBook> books = [];
+  List<ApiCategory> categories = [];
+  List<ApiBook> displayedBooks = [];
 
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -60,14 +64,29 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
-    final config = Configuration.local([Book.schema, Category.schema]);
-    realm = Realm(config);
+    _fetchData();
+  }
 
-    books = realm.all<Book>().toList();
-    categories = [Category('all', 'All')] + realm.all<Category>().toList();
+  Future<void> _fetchData() async {
+    try {
+      final bookRes = await http.get(Uri.parse('$baseUrl/Sach'));
+      final catRes = await http.get(Uri.parse('$baseUrl/Theloai'));
 
-    _filterAndSortBooks();
-    _animationController.forward();
+      if (bookRes.statusCode == 200 && catRes.statusCode == 200) {
+        final bookData = json.decode(bookRes.body) as List;
+        final catData = json.decode(catRes.body) as List;
+
+        setState(() {
+          books = bookData.map((e) => ApiBook.fromJson(e)).toList();
+          categories = [ApiCategory(id: 'all', name: 'All')] +
+              catData.map((e) => ApiCategory.fromJson(e)).toList();
+          _filterAndSortBooks();
+          _animationController.forward();
+        });
+      }
+    } catch (e) {
+      print('Error loading data: $e');
+    }
   }
 
   void _filterAndSortBooks() {
@@ -99,7 +118,7 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
     });
   }
 
-  void _navigateToDetail(Book book) {
+  void _navigateToDetail(ApiBook book) {
     Navigator.push(
       context,
       PageRouteBuilder(
@@ -117,53 +136,55 @@ class _BookStoreHomePageState extends State<BookStoreHomePage>
   void dispose() {
     _animationController.dispose();
     _searchController.dispose();
-    realm.close();
+    // realm.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      body: SafeArea(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: Column(
-            children: [
-              BookStoreHeader(
-                booksCount: displayedBooks.length,
-                isGridView: isGridView,
-                onViewToggle: (isGrid) => setState(() => isGridView = isGrid),
-                searchController: _searchController,
-                searchQuery: searchQuery,
-                onSearchChanged: (value) {
-                  setState(() => searchQuery = value);
-                  _filterAndSortBooks();
-                },
-              ),
-              BookStoreFilters(
-                categories: categories,
-                selectedCategory: selectedCategory,
-                selectedSort: selectedSort,
-                sortOptions: sortOptions,
-                onCategoryChanged: (category) {
-                  setState(() => selectedCategory = category);
-                  _filterAndSortBooks();
-                },
-                onSortChanged: (sort) {
-                  setState(() => selectedSort = sort);
-                  _filterAndSortBooks();
-                },
-              ),
-              Expanded(
-                child: BookStoreContent(
-                  books: displayedBooks,
+    return NetworkChecker(
+      onFetchData: _fetchData,
+      child: Scaffold(
+        body: SafeArea(
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              children: [
+                BookStoreHeader(
+                  booksCount: displayedBooks.length,
                   isGridView: isGridView,
-                  onBookTap: _navigateToDetail,
+                  onViewToggle: (isGrid) => setState(() => isGridView = isGrid),
+                  searchController: _searchController,
+                  searchQuery: searchQuery,
+                  onSearchChanged: (value) {
+                    setState(() => searchQuery = value);
+                    _filterAndSortBooks();
+                  },
                 ),
-              ),
-            ],
+                BookStoreFilters(
+                  categories: categories,
+                  selectedCategory: selectedCategory,
+                  selectedSort: selectedSort,
+                  sortOptions: sortOptions,
+                  onCategoryChanged: (category) {
+                    setState(() => selectedCategory = category);
+                    _filterAndSortBooks();
+                  },
+                  onSortChanged: (sort) {
+                    setState(() => selectedSort = sort);
+                    _filterAndSortBooks();
+                  },
+                ),
+                Expanded(
+                  child: BookStoreContent(
+                    books: displayedBooks,
+                    isGridView: isGridView,
+                    onBookTap: _navigateToDetail,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

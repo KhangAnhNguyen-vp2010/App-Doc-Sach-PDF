@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 import 'BookCoverSmall.dart';
 import 'BookInfoDetailed.dart';
 
 class BookListItem extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
   final int index;
   final VoidCallback onTap;
 

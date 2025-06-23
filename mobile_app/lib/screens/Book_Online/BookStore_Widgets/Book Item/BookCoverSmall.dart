@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 
 class BookCoverSmall extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
 
   const BookCoverSmall({super.key, required this.book});
 

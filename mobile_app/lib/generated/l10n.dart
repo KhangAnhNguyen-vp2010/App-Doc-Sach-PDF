@@ -980,6 +980,51 @@ class S {
       args: [],
     );
   }
+
+  /// `There was a problem connecting`
+  String get thereWasAProblemConnecting {
+    return Intl.message(
+      'There was a problem connecting',
+      name: 'thereWasAProblemConnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There was a problem loading data`
+  String get thereWasAProblemLoadingData {
+    return Intl.message(
+      'There was a problem loading data',
+      name: 'thereWasAProblemLoadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your network or try again later.`
+  String get pleaseCheckYourNetworkOrTryAgainLater {
+    return Intl.message(
+      'Please check your network or try again later.',
+      name: 'pleaseCheckYourNetworkOrTryAgainLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reload`
+  String get reLoad {
+    return Intl.message('Reload', name: 'reLoad', desc: '', args: []);
+  }
+
+  /// `No PDF files found in Download folder`
+  String get noPDFFilesFoundInDownloadFolder {
+    return Intl.message(
+      'No PDF files found in Download folder',
+      name: 'noPDFFilesFoundInDownloadFolder',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

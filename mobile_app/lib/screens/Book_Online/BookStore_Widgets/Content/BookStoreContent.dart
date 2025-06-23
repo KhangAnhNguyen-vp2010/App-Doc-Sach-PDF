@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/api_book.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/ThemeProvider.dart';
-import '../../../../models/models.dart';
 import 'BooksGrid.dart';
 import 'BooksList.dart';
 import 'EmptyState.dart';
 
 class BookStoreContent extends StatelessWidget {
-  final List<Book> books;
+  // final List<Book> books;
+  final List<ApiBook> books;
   final bool isGridView;
-  final Function(Book) onBookTap;
+  // final Function(Book) onBookTap;
+  final Function(ApiBook) onBookTap;
 
   const BookStoreContent({
     super.key,

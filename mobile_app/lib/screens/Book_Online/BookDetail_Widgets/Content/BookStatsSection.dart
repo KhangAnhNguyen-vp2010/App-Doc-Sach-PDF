@@ -1,49 +1,16 @@
-// // Widget hiển thị thống kê (lượt xem, lượt thích)
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:realm/realm.dart';
+import 'package:mobile_app/models/api_book.dart';
+import 'package:provider/provider.dart'; // THÊM dòng này
+import '../../../../Providers/BookProvider.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../models/models.dart';
 import 'StatItem.dart';
 
-class BookStatsSection extends StatefulWidget {
-  final Book book;
-
-  const BookStatsSection({super.key, required this.book});
-
-  @override
-  _BookStatsSectionState createState() => _BookStatsSectionState();
-}
-
-class _BookStatsSectionState extends State<BookStatsSection> {
-  late Book _book;
-  late Realm _realm;
-  late StreamSubscription<RealmObjectChanges<Book>> _subscription;
-
-  @override
-  void initState() {
-    super.initState();
-    _realm = Realm(Configuration.local([Book.schema, Category.schema]));
-
-    // Lấy lại book từ Realm (để nhận object Realm chính xác)
-    _book = _realm.find<Book>(widget.book.id)!;
-
-    // Lắng nghe thay đổi của _book
-    _subscription = _book.changes.listen((changes) {
-      // Khi có thay đổi, gọi setState để rebuild UI
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    _realm.close();
-    super.dispose();
-  }
+class BookStatsSection extends StatelessWidget {
+  const BookStatsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final book = context.watch<BookProvider>().book;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(20),
@@ -64,7 +31,7 @@ class _BookStatsSectionState extends State<BookStatsSection> {
             child: StatItem(
               icon: Icons.visibility_outlined,
               label: S.of(context).view,
-              value: _formatNumber(_book.viewCount),
+              value: _formatNumber(book?.viewCount ?? 0),
               color: Colors.blue,
             ),
           ),
@@ -77,7 +44,7 @@ class _BookStatsSectionState extends State<BookStatsSection> {
             child: StatItem(
               icon: Icons.favorite_outline,
               label: S.of(context).likes,
-              value: _formatNumber(_book.likeCount),
+              value: _formatNumber(book?.likeCount ?? 0),
               color: Colors.red,
             ),
           ),

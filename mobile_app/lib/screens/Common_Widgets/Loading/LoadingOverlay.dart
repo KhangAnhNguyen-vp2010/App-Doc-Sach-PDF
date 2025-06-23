@@ -17,7 +17,7 @@ class LoadingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = context.watch<ThemeProvider>().isDarkMode;
     return Container(
-      color: Colors.white.withOpacity(0.9),
+      color: isDark ? Colors.black87 : Colors.white,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -29,10 +29,10 @@ class LoadingOverlay extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               "${S.of(context).loadingDocuments}...",
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: Colors.black87,
+                color: isDark ? Colors.white : Colors.black,
               ),
             ),
             const SizedBox(height: 8),

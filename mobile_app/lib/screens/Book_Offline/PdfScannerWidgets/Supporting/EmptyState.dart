@@ -38,7 +38,7 @@ class PdfEmptyState extends StatelessWidget {
           ),
           SizedBox(height: 8),
           Text(
-            "Không tìm thấy file PDF nào trong thư mục Download",
+            S.of(context).noPDFFilesFoundInDownloadFolder,
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
@@ -49,7 +49,7 @@ class PdfEmptyState extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onReload,
             icon: Icon(Icons.refresh),
-            label: Text('Tải lại'),
+            label: Text(S.of(context).reLoad),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.indigoAccent,
               foregroundColor: Colors.white,

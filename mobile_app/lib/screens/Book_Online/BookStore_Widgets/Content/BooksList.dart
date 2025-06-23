@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import '../../../../models/models.dart';
+import 'package:mobile_app/models/api_book.dart';
 import '../Book Item/BookListItem.dart';
 
 class BooksList extends StatelessWidget {
-  final List<Book> books;
-  final Function(Book) onBookTap;
+  // final List<Book> books;
+  final List<ApiBook> books;
+  // final Function(Book) onBookTap;
+  final Function(ApiBook) onBookTap;
 
   const BooksList({
     super.key,

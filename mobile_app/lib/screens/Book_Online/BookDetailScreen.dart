@@ -1,33 +1,38 @@
 // screens/book_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../Providers/BookProvider.dart';
 import '../../Providers/ThemeProvider.dart';
-import '../../models/models.dart';
+import '../../models/api_book.dart';
 import 'BookDetail_Widgets/Button/ActionButtonsSection.dart';
 import 'BookDetail_Widgets/Content/BookInfoSection.dart';
 import 'BookDetail_Widgets/Content/BookStatsSection.dart';
 import 'BookDetail_Widgets/Header/BookCoverSection.dart';
 
 class BookDetailScreen extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
 
   const BookDetailScreen({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {
     final isDark = context.watch<ThemeProvider>().isDarkMode;
-    return Scaffold(
-      backgroundColor: isDark ? Colors.black87 : Colors.grey[50],
-      appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            BookCoverSection(book: book),
-            BookInfoSection(book: book),
-            BookStatsSection(book: book),
-            ActionButtonsSection(book: book),
-            const SizedBox(height: 32),
-          ],
+    return ChangeNotifierProvider(
+      create: (_) => BookProvider()..setBook(book),
+      child: Scaffold(
+        backgroundColor: isDark ? Colors.black87 : Colors.grey[50],
+        appBar: _buildAppBar(context),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              BookCoverSection(),
+              BookInfoSection(),
+              BookStatsSection(),
+              ActionButtonsSection(book: book),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
@@ -56,23 +61,3 @@ class BookDetailScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

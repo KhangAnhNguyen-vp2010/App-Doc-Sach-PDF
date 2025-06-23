@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 import '../Book Item/BookCard.dart';
 
 class BooksGrid extends StatelessWidget {
-  final List<Book> books;
-  final Function(Book) onBookTap;
+  // final List<Book> books;
+  final List<ApiBook> books;
+  // final Function(Book) onBookTap;
+  final Function(ApiBook) onBookTap;
 
   const BooksGrid({
     super.key,

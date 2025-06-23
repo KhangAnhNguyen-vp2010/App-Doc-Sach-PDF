@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../models/models.dart';
+import 'package:mobile_app/models/api_category.dart';
 
 class CategoryFilters extends StatelessWidget {
-  final List<Category> categories;
+  // final List<Category> categories;
+  final List<ApiCategory> categories;
   final String selectedCategory;
   final Function(String) onChanged;
 

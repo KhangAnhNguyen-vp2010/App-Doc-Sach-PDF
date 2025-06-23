@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 import 'StatChip.dart';
 
 class BookInfo extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
 
   const BookInfo({super.key, required this.book});
 

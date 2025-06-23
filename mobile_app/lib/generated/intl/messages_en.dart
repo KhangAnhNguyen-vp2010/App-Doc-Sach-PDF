@@ -120,6 +120,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "No favorite books yet",
     ),
     "noFilesFound": MessageLookupByLibrary.simpleMessage("No files found"),
+    "noPDFFilesFoundInDownloadFolder": MessageLookupByLibrary.simpleMessage(
+      "No PDF files found in Download folder",
+    ),
     "noPagesHaveBeenBookmarkedYet": MessageLookupByLibrary.simpleMessage(
       "No pages have been bookmarked yet",
     ),
@@ -141,6 +144,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "pageNumberMustBeFrom1To": MessageLookupByLibrary.simpleMessage(
       "Page number must be from 1 to",
     ),
+    "pleaseCheckYourNetworkOrTryAgainLater":
+        MessageLookupByLibrary.simpleMessage(
+          "Please check your network or try again later.",
+        ),
     "pleaseEnterComment": MessageLookupByLibrary.simpleMessage(
       "Please enter a comment before submitting",
     ),
@@ -161,6 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Effective Date: May 31, 2025\n\nYour privacy is important to us. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our application. Please read this policy carefully to understand our views and practices regarding your personal data and how we will treat it.\n\n1. Information We Collect\nWe may collect personal information that you voluntarily provide to us when registering, using the app, or contacting customer support. This may include your name, email address, phone number, and any other information you choose to provide.\n\n2. Use of Your Information\nWe use the information we collect to:\n- Provide, operate, and maintain our app.\n- Improve, personalize, and expand our app.\n- Understand and analyze how you use the app.\n- Communicate with you, including sending updates, security alerts, and support messages.\n- Comply with legal obligations.\n\n3. Sharing Your Information\nWe do not sell or rent your personal information to third parties. We may share your information with trusted service providers who assist us in operating the app, conducting business, or servicing you, provided they agree to keep your information confidential.\n\n4. Data Security\nWe implement appropriate technical and organizational measures to protect your personal data from unauthorized access, disclosure, alteration, or destruction. However, no internet transmission or electronic storage method is 100% secure, and we cannot guarantee absolute security.\n\n5. Your Choices\nYou may update, correct, or delete your personal information by contacting us. You can also opt out of receiving promotional communications at any time.\n\n6. Children\'s Privacy\nOur app is not intended for use by children under the age of 13. We do not knowingly collect personal information from children under 13.\n\n7. Changes to This Privacy Policy\nWe may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy in the app and updating the effective date.\n\n8. Contact Us\nIf you have any questions about this Privacy Policy, please contact us at:\nEmail: privacy@example.com\nPhone: +1 (555) 123-4567\n\nThank you for trusting us with your information.\n",
     ),
     "provideAccess": MessageLookupByLibrary.simpleMessage("Provide access"),
+    "reLoad": MessageLookupByLibrary.simpleMessage("Reload"),
     "readAnnotateAndManagePDFsEasily": MessageLookupByLibrary.simpleMessage(
       "Read, annotate, and manage PDFs easily",
     ),
@@ -197,6 +205,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "The document has a total of",
     ),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
+    "thereWasAProblemConnecting": MessageLookupByLibrary.simpleMessage(
+      "There was a problem connecting",
+    ),
+    "thereWasAProblemLoadingData": MessageLookupByLibrary.simpleMessage(
+      "There was a problem loading data",
+    ),
     "time": MessageLookupByLibrary.simpleMessage("Time"),
     "toTheListForEasyRetrieval": MessageLookupByLibrary.simpleMessage(
       "to the list for easy retrieval",

@@ -124,6 +124,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noFilesFound": MessageLookupByLibrary.simpleMessage(
       "Không tìm thấy tệp nào",
     ),
+    "noPDFFilesFoundInDownloadFolder": MessageLookupByLibrary.simpleMessage(
+      "Không tìm thấy file PDF nào trong thư mục Download",
+    ),
     "noPagesHaveBeenBookmarkedYet": MessageLookupByLibrary.simpleMessage(
       "Chưa có trang nào được đánh dấu",
     ),
@@ -145,6 +148,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "pageNumberMustBeFrom1To": MessageLookupByLibrary.simpleMessage(
       "Số trang phải từ 1 đến",
     ),
+    "pleaseCheckYourNetworkOrTryAgainLater":
+        MessageLookupByLibrary.simpleMessage(
+          "Vui lòng kiểm tra mạng hoặc thử lại sau.",
+        ),
     "pleaseEnterComment": MessageLookupByLibrary.simpleMessage(
       "Vui lòng nhập nhận xét trước khi gửi",
     ),
@@ -165,8 +172,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ngày có hiệu lực: 31 tháng 5 năm 2025\n\nSự riêng tư của bạn rất quan trọng với chúng tôi. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, tiết lộ và bảo vệ thông tin của bạn khi bạn sử dụng ứng dụng của chúng tôi. Vui lòng đọc kỹ chính sách này để hiểu quan điểm và thực tiễn của chúng tôi về dữ liệu cá nhân và cách chúng tôi xử lý nó.\n\n1. Thông tin chúng tôi thu thập\nChúng tôi có thể thu thập thông tin cá nhân mà bạn tự nguyện cung cấp khi đăng ký, sử dụng ứng dụng hoặc liên hệ với bộ phận hỗ trợ. Thông tin này có thể bao gồm tên, địa chỉ email, số điện thoại và bất kỳ thông tin nào khác bạn cung cấp.\n\n2. Cách chúng tôi sử dụng thông tin của bạn\nChúng tôi sử dụng thông tin thu thập được để:\n- Cung cấp, vận hành và duy trì ứng dụng của chúng tôi.\n- Cải thiện, cá nhân hóa và mở rộng ứng dụng.\n- Hiểu và phân tích cách bạn sử dụng ứng dụng.\n- Liên lạc với bạn, bao gồm gửi cập nhật, cảnh báo bảo mật và tin nhắn hỗ trợ.\n- Tuân thủ các nghĩa vụ pháp lý.\n\n3. Chia sẻ thông tin của bạn\nChúng tôi không bán hoặc cho thuê thông tin cá nhân của bạn cho bên thứ ba. Chúng tôi có thể chia sẻ thông tin của bạn với các nhà cung cấp dịch vụ đáng tin cậy giúp chúng tôi vận hành ứng dụng, kinh doanh hoặc hỗ trợ bạn, với điều kiện họ đồng ý giữ bí mật thông tin của bạn.\n\n4. Bảo mật dữ liệu\nChúng tôi thực hiện các biện pháp kỹ thuật và tổ chức phù hợp để bảo vệ dữ liệu cá nhân của bạn khỏi truy cập trái phép, tiết lộ, thay đổi hoặc phá hủy. Tuy nhiên, không có phương pháp truyền tải internet hoặc lưu trữ điện tử nào an toàn tuyệt đối, và chúng tôi không thể đảm bảo bảo mật tuyệt đối.\n\n5. Lựa chọn của bạn\nBạn có thể cập nhật, chỉnh sửa hoặc xóa thông tin cá nhân bằng cách liên hệ với chúng tôi. Bạn cũng có thể chọn không nhận các thông báo quảng cáo bất cứ lúc nào.\n\n6. Quyền riêng tư của trẻ em\nỨng dụng của chúng tôi không dành cho trẻ em dưới 13 tuổi. Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi.\n\n7. Thay đổi Chính sách Bảo mật này\nChúng tôi có thể cập nhật Chính sách Bảo mật theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi nào bằng cách đăng chính sách mới trong ứng dụng và cập nhật ngày hiệu lực.\n\n8. Liên hệ với chúng tôi\nNếu bạn có bất kỳ câu hỏi nào về Chính sách Bảo mật này, vui lòng liên hệ với chúng tôi qua:\nEmail: privacy@example.com\nĐiện thoại: +1 (555) 123-4567\n\nCảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi.\n",
     ),
     "provideAccess": MessageLookupByLibrary.simpleMessage("Cấp quyền truy cập"),
+    "reLoad": MessageLookupByLibrary.simpleMessage("Tải lại"),
     "readAnnotateAndManagePDFsEasily": MessageLookupByLibrary.simpleMessage(
-      "Đọc sách - Để bớt ngu",
+      "Đọc sách - Khai mở tri thức",
     ),
     "readTheBookNow": MessageLookupByLibrary.simpleMessage("Đọc sách ngay"),
     "readingABook": MessageLookupByLibrary.simpleMessage("Đang đọc sách"),
@@ -201,6 +209,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Tài liệu có tổng cộng",
     ),
     "theme": MessageLookupByLibrary.simpleMessage("Giao diện"),
+    "thereWasAProblemConnecting": MessageLookupByLibrary.simpleMessage(
+      "Có sự cố khi kết nối",
+    ),
+    "thereWasAProblemLoadingData": MessageLookupByLibrary.simpleMessage(
+      "Đã xảy ra sự cố khi tải dữ liệu",
+    ),
     "time": MessageLookupByLibrary.simpleMessage("Thời gian"),
     "toTheListForEasyRetrieval": MessageLookupByLibrary.simpleMessage(
       "vào danh sách để dễ tìm lại",
@@ -220,7 +234,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unlike": MessageLookupByLibrary.simpleMessage("Bỏ thích"),
     "unliked": MessageLookupByLibrary.simpleMessage("Đã bỏ thích"),
     "version2025": MessageLookupByLibrary.simpleMessage(
-      "Phiên bản 2025 - Được phát triển bởi KhangAnhHUIT",
+      "Phiên bản 2025 - Được phát triển bởi KhangPhuHuyHUIT",
     ),
     "vietnamese": MessageLookupByLibrary.simpleMessage("Tiếng Việt"),
     "view": MessageLookupByLibrary.simpleMessage("Xem"),

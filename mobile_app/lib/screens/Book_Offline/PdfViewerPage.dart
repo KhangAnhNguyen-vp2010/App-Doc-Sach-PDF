@@ -6,8 +6,8 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:path/path.dart' as path;
 import '../../Providers/SearchTextProvider.dart';
 import '../../generated/l10n.dart';
-import '../../services/BookMarkService.dart';
-import '../../services/FavoriteService.dart';
+import '../../services/BookServices/BookMarkService.dart';
+import '../../services/BookServices/FavoriteService.dart';
 import '../Common_Widgets/Appbar/CustomAppBar.dart';
 import '../Common_Widgets/Appbar/SearchControls.dart';
 import '../Common_Widgets/Loading/LoadingOverlay.dart';
@@ -205,7 +205,6 @@ class _PdfViewerPageState extends State<PdfViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
         onWillPop: () async => !_isLoading, // Chỉ cho back khi không loading
         child: MultiProvider(

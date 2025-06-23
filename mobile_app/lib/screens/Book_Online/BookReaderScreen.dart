@@ -2,14 +2,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:realm/realm.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 import '../../Providers/SearchTextProvider.dart';
 import '../../generated/l10n.dart';
-import '../../models/models.dart';
-import '../../services/BookMarkService.dart';
-import '../../services/FavoriteService.dart';
+import '../../services/BookServices/BookMarkService.dart';
+import '../../services/BookServices/FavoriteService.dart';
 import '../Common_Widgets/Appbar/CustomAppBar.dart';
 import '../Common_Widgets/Appbar/SearchControls.dart';
 import '../Common_Widgets/Loading/LoadingOverlay.dart';
@@ -120,14 +117,13 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     setState(() => _isFavorite = isFavorite);
   }
 
-  Future<void> _toggleFavorite() async {
+  Future<void> _toggleFavorite(BuildContext context) async {
     try {
       if (_isFavorite) {
         await FavoriteService.removeFavorite(fileName);
         _showSnackBar('❌ ${S.of(context).unlike}');
       } else {
         await FavoriteService.addFavorite(fileName, widget.pdfUrl);
-        await _updateBookLikeCount();
         _showSnackBar('❤️ ${S.of(context).liked}');
       }
 
@@ -135,19 +131,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     } catch (e) {
       _showSnackBar(S.of(context).anErrorOccurredPleaseTryAgain);
       debugPrint('Error toggling favorite: $e');
-    }
-  }
-
-  Future<void> _updateBookLikeCount() async {
-    try {
-      final realm = Realm(Configuration.local([Book.schema, Category.schema]));
-      final bookToUpdate = realm.find<Book>(widget.bookId);
-
-      if (bookToUpdate != null) {
-        realm.write(() => bookToUpdate.likeCount += 1);
-      }
-    } catch (e) {
-      debugPrint('Error updating like count: $e');
     }
   }
 
@@ -178,7 +161,7 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         isMarked: _isMarked,
         isFavorite: _isFavorite,
         onToggleBookmark: _toggleMarkedPage,
-        onToggleFavorite: _toggleFavorite,
+        onToggleFavorite: ()=>{_toggleFavorite(context)},
         onGoToPage: _showGoToPageDialog,
         typeName: "online",
       ),
@@ -207,43 +190,46 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => SearchTextProvider(pdfController: _pdfController),
+    return WillPopScope(
+      onWillPop: () async => !_isLoading,
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => SearchTextProvider(pdfController: _pdfController),
+          ),
+        ],
+        child: Consumer<SearchTextProvider>(
+          builder: (context, searchProvider, child) {
+            return Scaffold(
+              appBar: CustomAppBar(
+                titleName: S.of(context).readingABook,
+                isSearching: _isSearching,
+                searchController: _searchController,
+                onToggleSearch: _toggleSearch,
+                onClearSearch: _clearSearch,
+                onShowOptions: _showOptionsBottomSheet,
+                onSearchChanged: searchProvider.onSearchChanged,
+                onSearchSubmitted: (value) {
+                  if (value.isNotEmpty) {
+                    searchProvider.search(value);
+                  }
+                },
+                isLoading: !_isLoading,
+              ),
+              body: Stack(
+                children: [
+                  _buildPdfViewer(),
+                  if (_isSearching)
+                    SearchControls(
+                      onPrevious: searchProvider.previousInstance,
+                      onNext: searchProvider.nextInstance,
+                    ),
+                  if (_isLoading) const LoadingOverlay(),
+                ],
+              ),
+            );
+          },
         ),
-      ],
-      child: Consumer<SearchTextProvider>(
-        builder: (context, searchProvider, child) {
-          return Scaffold(
-            appBar: CustomAppBar(
-              titleName: S.of(context).readingABook,
-              isSearching: _isSearching,
-              searchController: _searchController,
-              onToggleSearch: _toggleSearch,
-              onClearSearch: _clearSearch,
-              onShowOptions: _showOptionsBottomSheet,
-              onSearchChanged: searchProvider.onSearchChanged,
-              onSearchSubmitted: (value) {
-                if (value.isNotEmpty) {
-                  searchProvider.search(value);
-                }
-              },
-              isLoading: !_isLoading,
-            ),
-            body: Stack(
-              children: [
-                _buildPdfViewer(),
-                if (_isSearching)
-                  SearchControls(
-                    onPrevious: searchProvider.previousInstance,
-                    onNext: searchProvider.nextInstance,
-                  ),
-                if (_isLoading) const LoadingOverlay(),
-              ],
-            ),
-          );
-        },
       ),
     );
   }

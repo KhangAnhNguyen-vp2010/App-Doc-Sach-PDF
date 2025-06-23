@@ -198,10 +198,12 @@ class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveCl
       },
       child: ListView.separated(
         padding: EdgeInsets.all(16),
-        itemCount: (_filesToShow < _pdfFiles.length) ? _filesToShow + 1 : _filesToShow,
+        itemCount: (_filesToShow < _pdfFiles.length)
+            ? _filesToShow + 1 // để hiển thị thêm 1 item loading
+            : _pdfFiles.length,
         separatorBuilder: (context, index) => SizedBox(height: 8),
         itemBuilder: (context, index) {
-          if (index == _filesToShow) {
+          if (index == _filesToShow && _filesToShow < _pdfFiles.length) {
             return Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
@@ -212,6 +214,8 @@ class _PdfListScreenState extends State<PdfListScreen> with AutomaticKeepAliveCl
               ),
             );
           }
+
+          if (index >= _pdfFiles.length) return SizedBox(); // Tránh crash
 
           return PdfListItem(
             file: _pdfFiles[index],

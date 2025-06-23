@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 import 'BookCover.dart';
 import 'BookInfo.dart';
 
 class BookCard extends StatelessWidget {
-  final Book book;
+  // final Book book;
+  final ApiBook book;
   final int index;
   final VoidCallback onTap;
 

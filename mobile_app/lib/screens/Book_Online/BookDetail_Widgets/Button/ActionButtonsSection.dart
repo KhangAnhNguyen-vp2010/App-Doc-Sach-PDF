@@ -2,15 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../models/models.dart';
-import '../../../../services/downloadBook.dart';
+import '../../../../models/api_book.dart';
+import '../../../../services/BookServices/downloadBook.dart';
 import 'ReadBookButton.dart';
 import 'SecondaryButton.dart';
 
 class ActionButtonsSection extends StatelessWidget {
-  final Book book;
+  final ApiBook book;
 
-  const ActionButtonsSection({required this.book});
+  const ActionButtonsSection({super.key, required this.book});
 
   @override
   Widget build(BuildContext context) {

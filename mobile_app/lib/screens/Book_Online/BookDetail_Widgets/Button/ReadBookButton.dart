@@ -1,13 +1,13 @@
 // Nút đọc sách chính
 import 'package:flutter/material.dart';
-import 'package:realm/realm.dart';
-
+import 'package:provider/provider.dart';
+import '../../../../Providers/BookProvider.dart';
 import '../../../../generated/l10n.dart';
-import '../../../../models/models.dart';
+import '../../../../models/api_book.dart';
 import '../../BookReaderScreen.dart';
 
 class ReadBookButton extends StatelessWidget {
-  final Book book;
+  final ApiBook book;
 
   const ReadBookButton({super.key, required this.book});
 
@@ -35,26 +35,20 @@ class ReadBookButton extends StatelessWidget {
           ),
         ),
         onPressed: () {
-          final realm = Realm(Configuration.local([Book.schema, Category.schema]));
-
-          // Tìm lại cuốn sách đang dùng (phòng khi cần latest data)
-          final bookToUpdate = realm.find<Book>(book.id);
-
-          if (bookToUpdate != null) {
-            realm.write(() {
-              bookToUpdate.viewCount += 1;
-            });
-          }
-
-          // Tiếp tục chuyển đến trang đọc sách
+          context.read<BookProvider>().incrementLikeCountAndRefresh();
+          context.read<BookProvider>().incrementViewCountAndRefresh();
+          // Tiếp tục chuyển sang trang đọc sách
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookReaderScreen(
-                pdfUrl: book.pdfUrl,
-                bookName: book.title,
-                bookId: book.id,
-              ),
+              builder: (context) => ChangeNotifierProvider<BookProvider>.value(
+                value: context.read<BookProvider>(),
+                child: BookReaderScreen(
+                  pdfUrl: book.pdfUrl,
+                  bookName: book.title,
+                  bookId: book.id,
+                ),
+              )
             ),
           );
         },

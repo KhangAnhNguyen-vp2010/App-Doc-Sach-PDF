@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/models/api_category.dart';
 import 'package:provider/provider.dart';
 import '../../../../Providers/ThemeProvider.dart';
-import '../../../../models/models.dart';
 import 'CategoryFilters.dart';
 import 'SortDropdown.dart';
 
 class BookStoreFilters extends StatelessWidget {
-  final List<Category> categories;
+  // final List<Category> categories;
+  final List<ApiCategory> categories;
   final String selectedCategory;
   final String selectedSort;
   final Map<String, String> sortOptions;
